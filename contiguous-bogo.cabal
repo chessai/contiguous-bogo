@@ -1,4 +1,4 @@
-cabal-version: 2.4
+cabal-version: 2.2
 name:
   contiguous-bogo
 version:
@@ -22,22 +22,24 @@ maintainer:
 copyright:
   © 2019 chessai
 category:
-  Utility
+  Acme,Utility
 build-type:
   Simple
 extra-doc-files:
     README.md
   , CHANGELOG.md
 tested-with:
-  GHC == 8.2.2, GHC == 8.4.4, GHC == 8.6.3
+  GHC == 8.2.2, GHC == 8.4.4, GHC == 8.6.4
 
 library
   hs-source-dirs:
     src
   exposed-modules:
-    ContiguousBogo
+    Acme.Data.Primitive.Contiguous.Bogo
   build-depends:
-    , base >= 4.10.1.0 && < 4.13
+    , base >= 4.10.1 && < 4.13
+    , random-shuffle >= 0.0.4 && < 0.1
+    , contiguous >= 0.3 && < 0.4
   ghc-options:
     -Wall
     -O2
