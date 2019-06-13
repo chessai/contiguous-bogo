@@ -38,8 +38,8 @@ library
     Acme.Data.Primitive.Contiguous.Bogo
   build-depends:
     , base >= 4.10.1 && < 4.13
-    , random-shuffle >= 0.0.4 && < 0.1
-    , contiguous >= 0.3 && < 0.4
+    , contiguous >= 0.3 && < 0.5
+    , primitive >= 0.6.4 && < 0.8
   ghc-options:
     -Wall
     -O2
