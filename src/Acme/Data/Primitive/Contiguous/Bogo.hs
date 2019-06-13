@@ -1,22 +1,29 @@
 {-# language BangPatterns #-}
 {-# language ForeignFunctionInterface #-}
+{-# language OverloadedStrings #-}
+{-# language ScopedTypeVariables #-}
 
 -- | Bogosort contiguous datastructures.
 --   To make matters worse, we operate on lists,
 --   and turn those lists back into the original structure.
 module Acme.Data.Primitive.Contiguous.Bogo
   ( bogo
+  , testBogo
   ) where
 
 import Prelude hiding (read)
 
+import Chronos (encodeTimespan, stopwatch_, SubsecondPrecision(..))
 import Control.Applicative (liftA2)
 import Control.Monad (void, unless, (>=>))
 import Control.Monad.Primitive (PrimMonad(..))
 import Data.Primitive.Contiguous
 import GHC.Exts (RealWorld)
+import Data.Primitive.PrimArray (MutablePrimArray)
 import System.IO.Unsafe (unsafePerformIO)
 import qualified Data.Primitive.Contiguous as C
+import qualified Data.Text as T
+import qualified Data.Text.IO as T
 
 sorted :: (Contiguous arr, Element arr a, Ord a, PrimMonad m)
   => Mutable arr (PrimState m) a
@@ -85,3 +92,22 @@ swap !marr !ix1 !ix2 = do
   write marr ix1 atIx2
   write marr ix2 atIx1
 {-# inline swap #-}
+
+testBogo :: Int -> IO ()
+testBogo !sz = do
+  marr :: MutablePrimArray RealWorld Int <- new sz
+  srand
+  let go !ix = if ix < sz
+        then do
+          write marr ix =<< c_rand
+          go (ix + 1)
+        else pure ()
+  go 0
+  t <- stopwatch_ $ bogoMutable marr
+  T.putStrLn . mconcat $
+    [ "Sorting "
+    , T.pack (show sz)
+    , " elements took "
+    , encodeTimespan SubsecondPrecisionAuto t
+    , " seconds."
+    ]
